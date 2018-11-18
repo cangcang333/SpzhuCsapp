@@ -1,11 +1,19 @@
 
 #include "csapp.h"
 
+/**************************
+ * Error-handling functions
+ *************************/
+
 void unix_error(char *msg)
 {
 	fprintf(stderr, "%s: %s\n", msg, strerror(errno));
 	exit(0);
 }
+
+/********************************************
+ * Wrapper for Unix process control functions
+ *******************************************/
 
 pid_t Fork(void)
 {
@@ -16,6 +24,14 @@ pid_t Fork(void)
 		unix_error("Fork error");
 	}
 	return pid;
+}
+
+void Execve(const char *filename, char *const argv[], char *const envp[])
+{
+	if (execve(filename, argv, envp) < 0)
+	{
+		unix_error("Execve error");
+	}
 }
 
 void Kill(pid_t pid, int signum)
@@ -42,7 +58,7 @@ unsigned int Alarm(unsigned int seconds)
 
 /************************************
  * Wrappers for Unix signal functions
- ************************************/
+ ***********************************/
 handler_t *Signal(int signum, handler_t *handler)
 {
 	struct sigaction action, old_action;

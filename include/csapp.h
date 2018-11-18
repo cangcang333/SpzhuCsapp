@@ -19,7 +19,9 @@
 #define LISTENQ  1024  /* Second argument to listen() */
 
 void unix_error(char *msg);
+
 pid_t Fork(void);
+void Execve(const char *filename, char *const argv[], char *const envp[]);
 void Kill(pid_t pid, int signum);
 void Pause();
 

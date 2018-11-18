@@ -14,7 +14,9 @@ PROGS = waitpid1 \
 		signal1 \
 		signal2 \
 		signal3 \
-		signalprob0
+		signalprob0 \
+		signal4  \
+		procmask1
 
 all: $(CSAPP_SRC)/csapp.o $(PROGS)
 
