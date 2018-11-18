@@ -6,7 +6,15 @@ LDLIBS = -lpthread
 
 PROGS = waitpid1 \
 		waitpid2 \
-		waitprob1
+		waitprob1 \
+		kill  \
+		sigint1  \
+		alarm  \
+		snooze  \
+		signal1 \
+		signal2 \
+		signal3 \
+		signalprob0
 
 all: $(CSAPP_SRC)/csapp.o $(PROGS)
 
