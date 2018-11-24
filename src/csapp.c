@@ -4,10 +4,17 @@
 /**************************
  * Error-handling functions
  *************************/
-
+/* Unix-style error */
 void unix_error(char *msg)
 {
 	fprintf(stderr, "%s: %s\n", msg, strerror(errno));
+	exit(0);
+}
+
+/* Application error */
+void app_error(char *msg)
+{
+	fprintf(stderr, "%s\n" , msg);
 	exit(0);
 }
 
@@ -155,9 +162,21 @@ unsigned int Sleep(unsigned int secs)
 }
 
 
+/******************************************
+ * Wrappers for the standard I/O functions.
+ *****************************************/
 
+char *Fgets(char *ptr, int n, FILE *stream)
+{
+	char *rptr;
 
+	if (((rptr = fgets(ptr, n, stream)) == NULL) && ferror(stream))
+	{
+		app_error("Fgets error");
+	}
 
+	return rptr;
+}
 
 
 

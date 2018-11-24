@@ -12,6 +12,8 @@
 #include <errno.h>
 #include <signal.h>
 
+/* External variables */
+extern char **environ;  /* defined by libc */
 
 /* Misc constants */
 #define MAXLINE  8192  /* Max text line length */
@@ -19,6 +21,7 @@
 #define LISTENQ  1024  /* Second argument to listen() */
 
 void unix_error(char *msg);
+void app_error(char *msg);
 
 pid_t Fork(void);
 void Execve(const char *filename, char *const argv[], char *const envp[]);
@@ -39,5 +42,6 @@ int Sigsuspend(const sigset_t *set);
 
 unsigned int Sleep(unsigned int secs);
 
+char *Fgets(char *ptr, int n, FILE *stream);
 
 #endif
