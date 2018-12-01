@@ -1,0 +1,41 @@
+#include "csapp.h"
+
+jmp_buf buf;
+
+int error1 = 0;
+int error2 = 1;
+
+void foo(void);
+void bar(void);
+
+int main()
+{
+	int rc;
+
+	rc = setjmp(buf);
+	if (rc == 0)
+		foo();
+	else if (rc == 1)
+		printf("Detected and error1 condition in foo\n");
+	else if (rc == 2)
+		printf("Detected and error2 condition in foo\n");
+	else
+		printf("Unknown erroor condition in foo\n");
+
+	exit(0);
+
+}
+
+/* Deeply nested function foo */
+void foo(void)
+{
+	if (error1)
+		longjmp(buf, 1);
+	bar();
+}
+
+void bar(void)
+{
+	if (error2)
+		longjmp(buf, 2);
+}

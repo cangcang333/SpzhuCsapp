@@ -11,6 +11,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include <signal.h>
+#include <setjmp.h>
 
 /* External variables */
 extern char **environ;  /* defined by libc */

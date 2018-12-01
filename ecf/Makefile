@@ -18,7 +18,11 @@ PROGS = waitpid1 \
 		signal4  \
 		procmask1 \
 		shellex  \
-		procmask2
+		procmask2  \
+		rand_test  \
+		rfork  \
+		setjmp  \
+		restart
 
 all: $(CSAPP_SRC)/csapp.o $(PROGS)
 
