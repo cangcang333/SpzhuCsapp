@@ -181,6 +181,20 @@ char *Fgets(char *ptr, int n, FILE *stream)
 
 
 
+/***************************************************
+ * Wrappers for dynamic storage allocation functions
+ **************************************************/
+
+void *Malloc(size_t size)
+{
+	void *p;
+
+	if ((p = malloc(size)) == NULL)
+	{
+		unix_error("Malloc error");
+	}
+	return p;
+}
 
 
 

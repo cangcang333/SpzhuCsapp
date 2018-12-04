@@ -45,4 +45,6 @@ unsigned int Sleep(unsigned int secs);
 
 char *Fgets(char *ptr, int n, FILE *stream);
 
+void *Malloc(size_t size);
+
 #endif
