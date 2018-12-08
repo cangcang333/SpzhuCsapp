@@ -49,3 +49,11 @@ long int vec_length(vec_ptr v)
 {
 	return v->len;
 }
+
+
+data_t *get_vec_start(vec_ptr v)
+{
+	return v->data;
+}
+
+
