@@ -1,5 +1,5 @@
 #include "csapp.h"
-#include "vec.h"
+#include "combine.h"
 
 /* Create vector of specified length */
 vec_ptr new_vec(long int len)
@@ -56,4 +56,29 @@ data_t *get_vec_start(vec_ptr v)
 	return v->data;
 }
 
+/* 
+ * Set vector element.
+ * Return 0 (out of bounds) or 1 (successful)
+ */
+int set_vec_element(vec_ptr v, long index, data_t val)
+{
+	if (index < 0 || index >= v->len)
+	{
+		return 0;
+	}
+	v->data[index] = val;
 
+	return 1;
+}
+
+/* Set vector length. If >= allocated length, will reallocate */
+void set_vec_length(vec_ptr v, long newlen)
+{
+	if (newlen > v->allocated_len)
+	{
+		free(v->data);
+		v->data = calloc(newlen, sizeof(data_t));
+		v->allocated_len = newlen;
+	}
+	v->len = newlen;
+}

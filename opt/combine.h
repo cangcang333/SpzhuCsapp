@@ -1,35 +1,43 @@
 #ifdef FLOAT
-typedef float data_t
+typedef float data_t;
 #define DATA_NAME "Float"
 #endif
 
+
+/*
+#ifdef SHORT
+typedef short data_t;
+#define DATA_NAME "Short"
+#endif
+*/
+
 #ifdef DOUBLE
-typedef double data_t
+typedef double data_t;
 #define DATA_NAME "Double"
 #endif
 
 #ifdef EXTEND
-typedef long double data_t
+typedef long double data_t;
 #define DATA_NAME "Extended"
 #endif
 
 #ifdef INT 
-typedef int data_t
+typedef int data_t;
 #define DATA_NAME "Integer"
 #endif
 
 #ifdef LONG 
-typedef long data_t
+typedef long data_t;
 #define DATA_NAME "Long"
 #endif
 
 #ifdef CHAR 
-typedef char data_t
+typedef char data_t;
 #define DATA_NAME "Char"
 #endif
 
 #ifdef FLOAT
-typedef float data_t
+typedef float data_t;
 #define DATA_NAME "Float"
 #endif
 

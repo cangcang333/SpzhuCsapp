@@ -5,7 +5,7 @@
 
 char combine1_descr[] = "combine1: Maximum use of data abstraction";
 /* $begin combine1 */
-void combine1(vec_ptr v, data_t *data)
+void combine1(vec_ptr v, data_t *dest)
 {
 	long i;
 
@@ -21,7 +21,7 @@ void combine1(vec_ptr v, data_t *data)
 
 char combine2_descr[] = "combine2: Take vec_length() out of loop";
 /* $begin combine2 */
-void combine2(vec_ptr v, data_t *data)
+void combine2(vec_ptr v, data_t *dest)
 {
 	long i;
 	long length = vec_length(v);
@@ -39,7 +39,7 @@ void combine2(vec_ptr v, data_t *data)
 char combine3_descr[] = "combine3: Array reference to vector data";
 /* $begin combine3 */
 /* Direct access to vector data */
-void combine3(vec_ptr v, data_t *data)
+void combine3(vec_ptr v, data_t *dest)
 {
 	long i;
 	long length = vec_length(v);
@@ -53,10 +53,10 @@ void combine3(vec_ptr v, data_t *data)
 }
 /* $end combine3 */
 
-char combine3w_descr[] = "combine3w: Update *dest within loop only with write"
+char combine3w_descr[] = "combine3w: Update *dest within loop only with write";
 /* $begin combine3w */
 /* Make sure dest updated on each iteration */
-void combine3w(vec_ptr v, data_t *data)
+void combine3w(vec_ptr v, data_t *dest)
 {
 	long i;
 	long length = vec_length(v);
@@ -76,7 +76,7 @@ void combine3w(vec_ptr v, data_t *data)
 char combine4_descr[] = "combine4: Array reference, accumulate in temporary";
 /* $begin combine4 */
 /* Accumulate result in local variable */
-void combine4(vec_ptr v, data_t *data)
+void combine4(vec_ptr v, data_t *dest)
 {
 	long i;
 	long length = vec_length(v);
@@ -95,7 +95,7 @@ void combine4(vec_ptr v, data_t *data)
 char combine4b_descr[] = "combine4b: Include bonds check in loop";
 /* $begin combine4b */
 /* Include bounds check in loop */
-void combine4b(vec_ptr v, data_t *data)
+void combine4b(vec_ptr v, data_t *dest)
 {
 	long i;
 	long length = vec_length(v);
@@ -105,7 +105,7 @@ void combine4b(vec_ptr v, data_t *data)
 	{
 		if (i >= 0 && i < v->len)
 		{
-			acc = acc OP data[i];
+			acc = acc OP v->data[i];
 		}
 	}
 	*dest = acc;
