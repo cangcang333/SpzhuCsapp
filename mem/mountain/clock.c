@@ -7,7 +7,7 @@
 
 /* Keep track of most recent reading of cycle counter */
 /* unsigned means unsigned int, signed means signed int. */
-static unsiged cyc_hi = 0;
+static unsigned cyc_hi = 0;
 static unsigned cyc_lo = 0;
 
 void access_counter(unsigned *hi, unsigned *lo)
@@ -193,7 +193,7 @@ void start_comp_counter()
 double get_comp_counter()
 {
 	double time = get_counter();
-	doublt ctime;
+	double ctime;
 	struct tms t;
 	clock_t ticks;
 	times(&t);

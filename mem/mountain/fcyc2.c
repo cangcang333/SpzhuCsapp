@@ -117,7 +117,7 @@ double fcyc2_full(test_funct f, int param1, int param2, int clear_cache,
 					int k, double epsilon, int maxsamples, int compensate)
 {
 	double result;
-	init_sample(k, maxsamples);
+	init_sampler(k, maxsamples);
 	if (compensate)
 	{
 		do
@@ -158,6 +158,178 @@ double fcyc2_full(test_funct f, int param1, int param2, int clear_cache,
 		for (i = 0; i < k; i++)
 		{
 			printf("%.0f%s", values[i], i==k-1 ? "]\n", ", ");
+		}
+	}
+#endif
+	result = values[0];
+#if !KEEP_VALS
+	free(values);
+	values = NULL;
+#endif
+
+	return result;
+}
+
+
+double fcyc2(test_funct f, int param1, int param2, int clear_cache)
+{
+	return fcyc2_full(f, param1, param2, clear_cache, 3, 0.01, 500, 0);
+}
+
+
+/*********************** Version that uses gettimeofday ******************/
+
+static double Mhz = 0.0;
+
+#include <sys/time.h>
+
+static struct timeval tstart;
+
+/* Record current time */
+void start_counter_tod()
+{
+	if (Mhz == 0)
+	{
+		Mhz = mhz_full(0, 10);
+	}
+	gettimeofday(&tstart, NULL);
+}
+
+/* Get number of seconds since last call to start_timer */
+double get_counter_tod()
+{
+	struct timeval tfinish;
+	long sec, usec;
+	gettimeofday(&tfinish, NULL);
+	sec = tfinish.tv_sec - tstart.tv_sec;
+	usec = tfinish.tv_usec - tstart.tv_usec;
+	
+	return (1e6 * sec + usec) * Mhz;
+}
+
+/* Special counters that compensate for timer interrupt overhead */
+
+static double cyc_per_tick = 0.0;
+
+#define NEVENT 100
+#define THRESHOLD 1000
+#define RECORDTHRESH 3000
+
+
+/* Attempt to see how much time is used by timer interrupt */
+static void callibrate(int verbose)
+{
+	double oldt;
+	struct tms t;
+	clock_t oldc;
+	int e = 0;
+	times(&t);
+	oldc = t.tms_utime;
+	start_counter();
+	oldt = get_counter();
+	while (e < NEVENT)
+	{
+		double newt = get_counter();
+		if (newt - oldt >= THRESHOLD)
+		{
+			clock_t newc;
+			times(&t);
+			newc = t.tms_utime;
+			if (newc > oldc)
+			{
+				double cpt = (newt - oldt) / (newc - oldc);
+				if ((cyc_per_tick == 0.0 || cyc_per_tick > cpt) && cpt > RECORDTHRESH)
+				{
+					cyc_per_tick = cpt;
+				}	
+				if (verbose)
+				{
+					printf("Saw event lasting %.0f cycles and %d ticks. Ratio = %f\n", newt - oldt, (int)(newc - oldc), cpt);
+				}
+				e++;
+				oldc = newc;
+			}
+			oldt = newt;
+		}
+	}	
+	if (verbose)
+	{
+		printf("Setting cyc_per_tick to %f\n", cyc_per_tick);
+	}
+}
+
+
+static clock_t start_tick = 0;
+
+void start_comp_counter_tod()
+{
+	struct tms t;
+	if (cyc_per_tick == 0.0)
+	{
+		callibrate(0);
+	}
+	times(&t);
+	start_tick = t.tms_utime;
+	start_counter_tod();
+}
+
+double get_comp_counter_tod()
+{
+	double time = get_counter_tod();
+	double ctime;
+	struct tms t;
+	clock_t ticks;
+	times(&t);
+	ticks = t.tms_utime - start_tick;
+	ctime = time - ticks * cyc_per_tick;
+	printf("Measured %.0f cycles. Ticks = %d. Corrected %.0f cycles\n", time, (int)ticks, ctime);
+
+	return ctime;
+}
+
+double fcyc2_full_tod(test_funct f, int param1, int param2, int clear_cache, int k, double epsilon, int maxsamples, int compensate)
+{
+	double result;
+	init_sampler(k, maxsamples);
+	if (compensate)
+	{
+		do
+		{
+			double cyc;
+			if (clear_cache)
+			{
+				clear();
+			}
+			f(param1, param2);  /* warm cache */
+			start_comp_counter();
+			f(param1, param2);
+			cyc = get_comp_counter();
+			add_sample(cyc, k);
+		} while (!has_converged(k, epsilon, maxsamples) && samplecount < maxsamples);
+	}	
+	else
+	{
+		do
+		{
+			double cyc;
+			if (clear_cache)
+			{
+				clear();
+			}
+			f(param1, param2);  /* warm cache */
+			start_counter();
+			f(param1, param2);
+			cyc = get_counter();
+			add_sample(cyc, k);
+		} while (!has_converged(k, epsilon, maxsamples) && samplecount < maxsamples);
+	}
+#ifdef DEBUG
+	{
+		int i;
+		printf("%d smallest values: [", k);
+		for (i = 0; i < k; i++)
+		{
+			printf("%.0f%s", values[i], i == k-1 ? "]\n" : ", ");
 		}
 	}
 #endif
