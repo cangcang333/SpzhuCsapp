@@ -18,6 +18,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <netdb.h>
+#include <pthread.h>
+#include <semaphore.h>
 
 
 /* External variables */
@@ -71,8 +73,11 @@ void Fwirte(const void *ptr, size_t size, size_t nmemb, FILE *stream);
 
 
 
-
+/* Dynamic storage allocation wrappers */
 void *Malloc(size_t size);
+void *Realloc(void *ptr, size_t size);
+void *Calloc(size_t nmemb, size_t size);
+void Free(void *ptr);
 
 struct hostent *Gethostbyname(const char *name);
 struct hostent *Gethostbyaddr(const char *addr, int len, int type);
@@ -150,9 +155,21 @@ void Inet_pton(int af, const char *src, void *dst);
 
 
 
+/* Pthreads thread control wrappers */
+void Pthread_create(pthread_t *tidp, pthread_attr_t *attrp, 
+		    void * (*routine)(void *), void *argp);
+void Pthread_join(pthread_t tid, void **thread_return);
+void Pthread_cancel(pthread_t tid);
+void Pthread_detach(pthread_t tid);
+void Pthread_exit(void *retval);
+pthread_t Pthread_self(void);
+void Pthread_once(pthread_once_t *once_control, void (*init_function)());
 
 
-
+/* POSIX semaphore wrappers */
+void Sem_init(sem_t *sem, int pshared, unsigned int value);
+void P(sem_t *sem);
+void V(sem_t *sem);
 
 
 
